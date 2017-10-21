@@ -1,0 +1,19 @@
+sudo: required #is required to use docker service in travis
+
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker --version
+
+script:
+  - DOCKER_TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi)
+  - docker run -it --rm -v "$PWD/Dockerfile:/Dockerfile:ro" redcoolbeans/dockerlint
+  
+  - docker build -t $TRAVIS_REPO_SLUG:$TRAVIS_COMMIT .
+  - docker tag $TRAVIS_REPO_SLUG:$TRAVIS_COMMIT $TRAVIS_REPO_SLUG:$DOCKER_TAG
+  
+  - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
+  - docker push $TRAVIS_REPO_SLUG:DOCKER_TAG
