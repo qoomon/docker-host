@@ -9,11 +9,11 @@ before_install:
   - docker --version
 
 script:
-  - DOCKER_TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi)
+  - DOCKER_TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo ${TRAVIS_BRANCH#v} ; fi)
   - docker run -it --rm -v "$PWD/Dockerfile:/Dockerfile:ro" redcoolbeans/dockerlint
   
   - docker build -t $TRAVIS_REPO_SLUG:$TRAVIS_COMMIT .
   - docker tag $TRAVIS_REPO_SLUG:$TRAVIS_COMMIT $TRAVIS_REPO_SLUG:$DOCKER_TAG
   
   - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
-  - docker push $TRAVIS_REPO_SLUG:DOCKER_TAG
+  - docker push $TRAVIS_REPO_SLUG:$DOCKER_TAG
