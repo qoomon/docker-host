@@ -1,7 +1,8 @@
 #!/bin/sh
-GATEWAY=$(ip route | grep '^default' | cut -d' ' -f3)
+set -e
 
-echo "GATEWAY $GATEWAY"
+GATEWAY=$(ip route | grep '^default' | cut -d' ' -f3)
+echo "Docker Host Gateway: $GATEWAY"
 
 iptables -t nat -I PREROUTING -p tcp -j DNAT --to-destination ${GATEWAY}
 iptables -t nat -I POSTROUTING -j MASQUERADE
