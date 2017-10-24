@@ -1,3 +1,4 @@
+#!/bin/sh
 GATEWAY=$(ip route | grep '^default' | cut -d' ' -f3)
 
 echo "GATEWAY $GATEWAY"
