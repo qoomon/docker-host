@@ -8,4 +8,4 @@ iptables -t nat -I PREROUTING -p tcp --match multiport --dports "${PORTS:-'0:655
 iptables -t nat -I POSTROUTING -j MASQUERADE
 
 # run forever
-while sleep 3600; do :; done
+tail -f /dev/null
