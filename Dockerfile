@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk --update add iptables && rm -rf /var/cache/apk/*
+RUN apk --update add iptables bind-tools && rm -rf /var/cache/apk/*
 
 COPY ./entrypoint.sh /
 
