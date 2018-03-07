@@ -5,7 +5,7 @@ GATEWAY=$(ip route | grep '^default' | cut -d' ' -f3)
 
 # mac specific docker gateway
 GATEWAY_MAC="$(getent hosts docker.for.mac.host.internal | cut -d' ' -f1)"
-if [ -z "$GATEWAY_MAC" ]; then
+if [ -n "$GATEWAY_MAC" ]; then
     GATEWAY=$GATEWAY_MAC
 fi   
 
