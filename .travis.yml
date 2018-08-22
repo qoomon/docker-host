@@ -16,7 +16,7 @@ script:
   - docker tag $TRAVIS_REPO_SLUG:$TRAVIS_COMMIT $TRAVIS_REPO_SLUG:$DOCKER_TAG
   
   - |
-    if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+    if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
       docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWORD"
       docker push $TRAVIS_REPO_SLUG:$DOCKER_TAG
     fi
