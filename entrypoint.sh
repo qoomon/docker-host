@@ -5,9 +5,9 @@ GATEWAY=$(ip route | grep '^default' | cut -d' ' -f3)
 
 # mac specific docker gateway
 GATEWAY_MAC="$(getent hosts docker.for.mac.localhost | cut -d' ' -f1)"
-if [ -n "$GATEWAY_MAC" ]; then
+if [ -n "$GATEWAY_MAC" ] && [ "$GATEWAY_MAC" != "::1" ]; then
     GATEWAY=$GATEWAY_MAC
-fi   
+fi
 
 echo "Docker Host Gateway: $GATEWAY"
 
