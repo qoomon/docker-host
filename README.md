@@ -8,15 +8,24 @@ Docker image to forward all traffic to the docker host
 `PORTS` a comma seperated list of ports and port ranges, **default**: 0:65535 
 
 # Docker Run
-```docker run -it --rm --cap-add=NET_ADMIN --cap-add=NET_RAW -e PORTS=0:1024,9000 qoomon/docker-host```
+```docker run -it --rm --name dockerhost --cap-add=NET_ADMIN --cap-add=NET_RAW -e PORTS=0:1024,9000 qoomon/docker-host```
+
+```docker run --rm -it --link dockerhost bash ping dockerhost```
 
 # Docker Compose
 ```yaml
-dockerhost:
-    image: qoomon/docker-host
-    cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
-    mem_limit: 4M
-    restart: on-failure
-    environment:
-      - PORTS=0:1024,900
+version: '2'
+
+services:
+    dockerhost:
+        image: qoomon/docker-host
+        cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
+        mem_limit: 4M
+        restart: on-failure
+        environment:
+          - PORTS=0:1024,9000
+
+    dummy:
+        image: bash
+        command: ["ping" , "dockerhost"]
 ```
