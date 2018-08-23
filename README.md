@@ -8,7 +8,7 @@ Docker image to forward all traffic to the docker host
 `PORTS` a comma seperated list of ports and port ranges, **default**: 0:65535 
 
 # Docker Run
-```docker run -it --cap-add=NET_ADMIN --cap-add=NET_RAW -e PORTS=0:1024,9000 qoomon/docker-host```
+```docker run -it --rm --cap-add=NET_ADMIN --cap-add=NET_RAW -e PORTS=0:1024,9000 qoomon/docker-host```
 
 # Docker Compose
 ```yaml
