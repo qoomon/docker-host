@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  dockerhost:
+    build:
+      context: .
+    cap_add: [ 'NET_ADMIN', 'NET_RAW' ]

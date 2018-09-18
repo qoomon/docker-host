@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# Stop gracefully
+trap : TERM INT
+
 DOCKER_HOST="$(getent hosts host.docker.internal | cut -d' ' -f1)"
 if [ ! $DOCKER_HOST ]; then
   DOCKER_HOST=$(ip route | grep '^default' | cut -d' ' -f3)
@@ -14,4 +17,4 @@ iptables -t nat -I PREROUTING -p tcp --match multiport --dports "$FORWARDING_POR
 iptables -t nat -I POSTROUTING -j MASQUERADE
 
 # run forever
-tail -f /dev/null
+tail -f /dev/null & wait
