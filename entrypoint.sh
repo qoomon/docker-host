@@ -14,4 +14,4 @@ iptables -t nat -I PREROUTING -p tcp --match multiport --dports "$FORWARDING_POR
 iptables -t nat -I POSTROUTING -j MASQUERADE
 
 # run forever
-tail -f /dev/null
+trap "exit 0;" TERM INT; while true; do sleep 1d; done & wait
