@@ -1,4 +1,4 @@
-**Obsolate doe to dockers platform independent dns entry `host.docker.internal`**
+**Obsolate due to dockers platform independent dns entry `host.docker.internal`**
 
 # docker-host
 Docker image to forward all traffic to the docker host `host.docker.internal`
