@@ -3,7 +3,7 @@ set -e
 
 DOCKER_HOST="$(getent hosts host.docker.internal | cut -d' ' -f1)"
 if [ ! $DOCKER_HOST ]; then
-  DOCKER_HOST=$(ip route | grep '^default' | cut -d' ' -f3)
+  DOCKER_HOST=$(ip -4 route show default | cut -d' ' -f3)
 fi
 
 FORWARDING_PORTS=${PORTS:-'0:65535'}
