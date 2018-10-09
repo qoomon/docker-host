@@ -1,7 +1,7 @@
 
 # docker-host
 Docker image to forward all traffic to the docker host 
-* uses dns entry `host.docker.internal` if avaialable
+* uses dns entry `host.docker.internal` if available
 * or default gateway as docker host
 
 [![Build Status](https://travis-ci.org/qoomon/docker-host.svg?branch=master)](https://travis-ci.org/qoomon/docker-host)
