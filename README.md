@@ -8,7 +8,7 @@ Docker image to forward all traffic to the docker host
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
 # Docker Run Example
-```docker run -it --rm --name 'dockerhost' --cap-add=NET_ADMIN --cap-add=NET_RAW qoomon/docker-host```
+```docker run -it --restart on-failure --name 'dockerhost' --cap-add=NET_ADMIN --cap-add=NET_RAW qoomon/docker-host```
 
 ```docker run -it --rm --name dummy --link 'dockerhost' bash ping 'dockerhost'```
 
