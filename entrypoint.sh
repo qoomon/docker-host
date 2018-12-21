@@ -14,5 +14,7 @@ FORWARDING_PORTS=${PORTS:-'0:65535'}
 iptables -t nat -I PREROUTING -p tcp --match multiport --dports "$FORWARDING_PORTS" -j DNAT --to-destination $DOCKER_HOST
 iptables -t nat -I POSTROUTING -j MASQUERADE
 
+trap "exit 0;" TERM INT
+
 # Ah, ha, ha, ha, stayin' alive...
-trap "exit 0;" TERM INT; while true; do sleep 1d; done & wait
+mkfifo void; tail -f void & wait
