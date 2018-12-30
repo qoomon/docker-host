@@ -17,4 +17,7 @@ iptables -t nat -I POSTROUTING -j MASQUERADE
 trap "exit 0;" TERM INT
 
 # Ah, ha, ha, ha, stayin' alive...
-mkfifo void; tail -f void & wait
+while true; do :; done &
+kill -STOP $!
+wait $!
+
