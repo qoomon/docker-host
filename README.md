@@ -8,12 +8,20 @@ Docker image to forward all traffic to the docker host
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
 ## Docker Example - Link
-```docker run --name 'dockerhost' --cap-add=NET_ADMIN --cap-add=NET_RAW --restart on-failure qoomon/docker-host```
-
-```docker run --name dummy --link 'dockerhost' appropriate/curl 'http://dockerhost'```
+```sh
+docker run --name 'dockerhost' \
+  --cap-add=NET_ADMIN --cap-add=NET_RAW \
+  --restart on-failure \
+  qoomon/docker-host
+```
+```sh
+docker run --name dummy \
+  --link 'dockerhost' 
+  appropriate/curl 'http://dockerhost'
+```
 
 ## Docker Example - Network
-```
+```sh
 network_name="Network-$RANDOM"
 docker network create "$network_name"
 docker run --name "${network_name}-dockerhost" \
@@ -22,7 +30,7 @@ docker run --name "${network_name}-dockerhost" \
   --net=${network_name} --network-alias 'dockerhost' \
   qoomon/docker-host
 ```
-```
+```sh
 docker run --name dummy \
   --net=${network_name} \
   appropriate/curl 'http://dockerhost'
