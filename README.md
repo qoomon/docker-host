@@ -24,6 +24,8 @@ docker run --name dummy \
 ```sh
 network_name="Network-$RANDOM"
 docker network create "$network_name"
+```
+```sh
 docker run --name "${network_name}-dockerhost" \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
   --restart on-failure \
