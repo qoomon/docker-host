@@ -40,7 +40,7 @@ docker run --name "${network_name}-dockerhost" \
 ```
 Run your application container within the dockerhost network.
 The dockerhost will be reachable through the domain/network-alias `dockerhost` of the dockerhost container e.g. `dockerhost:8080`
-This example uses ``curl` as an application dummy.
+This example uses `curl` as an application dummy.
 ```sh
 docker run --name dummy \
   --net=${network_name} \
