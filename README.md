@@ -8,23 +8,29 @@ Docker image to forward all traffic to the docker host
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
 ## Docker Example - Link
+Run the dockerhost container.
 ```sh
 docker run --name 'dockerhost' \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
   --restart on-failure \
   qoomon/docker-host
 ```
+Run your application container and link the dockerhost container.
+The dockerhost will be reachable through the domain/link `dockerhost` of the dockerhost container e.g. `dockerhost:8080`
+This example uses `curl` as an application dummy.
 ```sh
 docker run --name dummy \
   --link 'dockerhost' 
-  appropriate/curl 'http://dockerhost'
+  appropriate/curl 'http://dockerhost8080'
 ```
 
 ## Docker Example - Network
+Create the dockerhost network.
 ```sh
 network_name="Network-$RANDOM"
 docker network create "$network_name"
 ```
+Run the dockerhost container within the dockerhost network.
 ```sh
 docker run --name "${network_name}-dockerhost" \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
@@ -32,10 +38,13 @@ docker run --name "${network_name}-dockerhost" \
   --net=${network_name} --network-alias 'dockerhost' \
   qoomon/docker-host
 ```
+Run your application container within the dockerhost network.
+The dockerhost will be reachable through the domain/network-alias `dockerhost` of the dockerhost container e.g. `dockerhost:8080`
+This example uses ``curl` as an application dummy.
 ```sh
 docker run --name dummy \
   --net=${network_name} \
-  appropriate/curl 'http://dockerhost'
+  appropriate/curl 'http://dockerhost:8080'
 ```
 
 # Docker Compose Example
@@ -51,5 +60,5 @@ services:
     dummy:
         depends_on: [ dockerhost ]
         image: appropriate/curl
-        command: ["http://dockerhost"]
+        command: ["http://dockerhost8080"]
 ```
