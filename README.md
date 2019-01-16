@@ -4,6 +4,9 @@ Docker image to forward all traffic to the docker host
 * uses dns entry `host.docker.internal` if available
 * or default gateway as docker host
 
+You can manually override the destination IP address by setting the environment variable `DOCKER_HOST`.
+This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
+
 [![Build Status](https://travis-ci.org/qoomon/docker-host.svg?branch=master)](https://travis-ci.org/qoomon/docker-host)
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
