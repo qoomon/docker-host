@@ -13,7 +13,7 @@ This allows you to use this image to forward traffic to arbitrary destinations, 
 
 # Examples
 
-#### Prerequisit
+#### Prerequisite
 Simulate localhost webserver on port 8080.
 ```sh
 docker run --name nginx -p 8080:80 \
