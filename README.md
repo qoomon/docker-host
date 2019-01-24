@@ -13,13 +13,14 @@ This allows you to use this image to forward traffic to arbitrary destinations, 
 
 # Examples
 
-Run dummy nginx bound to localhost on port 8080.
+#### Prerequisit
+Simulate localhost webserver on port 8080.
 ```sh
 docker run --name nginx -p 8080:80 \
   -d nginx
 ```
 
-## Docker Example - Link
+## Docker Link
 Run the dockerhost container.
 ```sh
 docker run --name 'dockerhost' \
@@ -36,7 +37,7 @@ docker run --rm \
   appropriate/curl 'http://dockerhost:8080'
 ```
 
-## Docker Example - Network
+## Docker Network
 Create the dockerhost network.
 ```sh
 network_name="Network-$RANDOM"
@@ -59,7 +60,7 @@ docker run --rm \
   appropriate/curl 'http://dockerhost:8080'
 ```
 
-# Docker Compose Example
+## Docker Compose
 ```yaml
 version: '2'
 
