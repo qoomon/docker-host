@@ -10,21 +10,30 @@ This allows you to use this image to forward traffic to arbitrary destinations, 
 [![Build Status](https://travis-ci.org/qoomon/docker-host.svg?branch=master)](https://travis-ci.org/qoomon/docker-host)
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
+
+# Examples
+
+Run dummy nginx bound to localhost on port 8080.
+```sh
+docker run --name nginx -p 8080:80 \
+  -d nginx
+```
+
 ## Docker Example - Link
 Run the dockerhost container.
 ```sh
 docker run --name 'dockerhost' \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
   --restart on-failure \
-  qoomon/docker-host
+  -d qoomon/docker-host
 ```
 Run your application container and link the dockerhost container.
 The dockerhost will be reachable through the domain/link `dockerhost` of the dockerhost container e.g. `dockerhost:8080`
 This example uses `curl` as an application dummy.
 ```sh
-docker run --name dummy \
-  --link 'dockerhost' 
-  appropriate/curl 'http://dockerhost8080'
+docker run --rm \
+  --link 'dockerhost' \
+  appropriate/curl 'http://dockerhost:8080'
 ```
 
 ## Docker Example - Network
@@ -45,7 +54,7 @@ Run your application container within the dockerhost network.
 The dockerhost will be reachable through the domain/network-alias `dockerhost` of the dockerhost container e.g. `dockerhost:8080`
 This example uses `curl` as an application dummy.
 ```sh
-docker run --name dummy \
+docker run --rm \
   --net=${network_name} \
   appropriate/curl 'http://dockerhost:8080'
 ```
