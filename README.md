@@ -74,5 +74,5 @@ services:
     dummy:
         depends_on: [ dockerhost ]
         image: appropriate/curl
-        command: ["http://dockerhost8080"]
+        command: ["http://dockerhost:8080"]
 ```
