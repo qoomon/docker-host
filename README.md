@@ -9,7 +9,7 @@ This allows you to use this image to forward traffic to arbitrary destinations, 
 
 [![Build Status](https://travis-ci.com/qoomon/docker-host.svg?branch=master)](https://travis-ci.com/qoomon/docker-host)
 
-![GitHub release](https://img.shields.io/github/release/qoomon/docker-host.svg)
+[![GitHub release](https://img.shields.io/github/release/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
