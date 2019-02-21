@@ -69,7 +69,7 @@ services:
     dockerhost:
         image: qoomon/docker-host
         cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
-        mem_limit: 4M
+        mem_limit: 8M
         restart: on-failure
     dummy:
         depends_on: [ dockerhost ]
