@@ -14,7 +14,7 @@ Docker image to forward all traffic to the docker host
 You can manually override the destination IP address by setting the environment variable `DOCKER_HOST`.
 This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
 
-⚠️ On **Linux systems** you have to bind your application to `bridge` network gateway in addition to localhost(127.0.0.1). Use following docker command to get the bride network gatway IP address `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
+⚠️ On **Linux systems** you have to bind your host applications to `bridge` network gateway in addition to localhost(127.0.0.1), if you want to reach them through docker-host container. Use following docker command to get the bride network gatway IP address `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
 
 # Examples
 
