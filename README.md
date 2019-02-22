@@ -1,11 +1,5 @@
 
 # docker-host
-Docker image to forward all traffic to the docker host 
-* uses dns entry `host.docker.internal` if available
-* or default gateway as docker host
-
-You can manually override the destination IP address by setting the environment variable `DOCKER_HOST`.
-This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
 
 [![Build Status](https://travis-ci.com/qoomon/docker-host.svg?branch=master)](https://travis-ci.com/qoomon/docker-host)
 
@@ -13,6 +7,14 @@ This allows you to use this image to forward traffic to arbitrary destinations, 
 
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
+Docker image to forward all traffic to the docker host 
+* uses dns entry `host.docker.internal` if available
+* or default gateway as docker host
+
+You can manually override the destination IP address by setting the environment variable `DOCKER_HOST`.
+This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
+
+⚠️ On **Linux systems** you have to bind your application to `bridge` network gateway in addition to localhost(127.0.0.1). Use following docker command to get the bride network gatway IP address `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
 
 # Examples
 
@@ -21,9 +23,7 @@ Simulate localhost webserver on port 8080.
 ```sh
 docker run --name nginx -p 8080:80 \
   -d nginx
-```
-
-⚠️ On **Linux systems** you have to bind your application to `bridge` network gateway in addition to localhost(127.0.0.1). Use following docker command to get the bride network gatway IP address `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`  
+```  
 
 ## Docker Link
 Run the dockerhost container.
