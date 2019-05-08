@@ -1,7 +1,16 @@
-version: '3'
+version: '2'
 
 services:
-  dockerhost:
-    build:
-      context: .
-    cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
+    dockerhost:
+        image: qoomon/docker-host
+        cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
+        mem_limit: 8M
+        restart: on-failure
+    tcp_message_emitter:
+        depends_on: [ dockerhost ]
+        image: alpine
+        command: [ "sh", "-c", "while :; do echo -n 'TCP - '; date; sleep 1; done | nc 'dockerhost' 2323 -v"]
+    udp_message_emitter:
+        depends_on: [ dockerhost ]
+        image: alpine
+        command: [ "sh", "-c", "while :; do echo -n 'UDP - '; date; sleep 1; done | nc 'dockerhost' 5353 -u -v"]

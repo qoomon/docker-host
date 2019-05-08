@@ -7,7 +7,7 @@
 
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
-Docker image to forward all traffic to the docker host 
+Docker image to forward **TCP** and **UDP** traffic to the docker host 
 * uses dns entry `host.docker.internal` if available
 * or default gateway as docker host
 
@@ -16,14 +16,18 @@ This allows you to use this image to forward traffic to arbitrary destinations, 
 
 ⚠️ On **Linux systems** you have to bind your host applications to `bridge` network gateway in addition to localhost(127.0.0.1), if you want to reach them through docker-host container. Use following docker command to get the bridge network gateway IP address `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
 
-# Examples
+# Example
+This example will send messages from docker container to docker host with `netcat`
 
-#### Prerequisite
-Simulate localhost webserver on port 8080.
+### Prerequisite
+Start `netcat` server **TCP** on port `2323` to receive and display messages
 ```sh
-docker run --name nginx -p 8080:80 \
-  -d nginx
-```  
+nc 127.0.0.1 8080 -lk
+```
+Start `netcat` server **UDP** on port `5353` to receive and display messages
+```sh
+nc 127.0.0.1 5353 -lk -u -w0
+```   
 
 ## Docker Link
 Run the dockerhost container.
@@ -34,12 +38,18 @@ docker run --name 'dockerhost' \
   -d qoomon/docker-host
 ```
 Run your application container and link the dockerhost container.
-The dockerhost will be reachable through the domain/link `dockerhost` of the dockerhost container e.g. `dockerhost:8080`
-This example uses `curl` as an application dummy.
+The dockerhost will be reachable through the domain/link `dockerhost` of the dockerhost container
+#### This example will let you send messages to **TCP** `netcat` server on docker host.
 ```sh
 docker run --rm \
   --link 'dockerhost' \
-  appropriate/curl 'http://dockerhost:8080'
+  -it alpine nc 'dockerhost' 2323 -v
+```
+#### This example will let you send messages to **TCP** `netcat` server on docker host.
+```sh
+docker run --rm \
+  --link 'dockerhost' \
+  -it alpine nc 'dockerhost' 5353 -u -v
 ```
 
 ## Docker Network
@@ -57,12 +67,18 @@ docker run --name "${network_name}-dockerhost" \
   qoomon/docker-host
 ```
 Run your application container within the dockerhost network.
-The dockerhost will be reachable through the domain/network-alias `dockerhost` of the dockerhost container e.g. `dockerhost:8080`
-This example uses `curl` as an application dummy.
+The dockerhost will be reachable through the domain/link `dockerhost` of the dockerhost container
+#### This example will let you send messages to **TCP** `netcat` server on docker host.
 ```sh
 docker run --rm \
-  --net=${network_name} \
-  appropriate/curl 'http://dockerhost:8080'
+  --link 'dockerhost' \
+  -it alpine nc 'dockerhost' 2323 -v
+```
+#### This example will let you send messages to **TCP** `netcat` server on docker host.
+```sh
+docker run --rm \
+  --link 'dockerhost' \
+  -it alpine nc 'dockerhost' 5353 -u -v
 ```
 
 ## Docker Compose
@@ -75,8 +91,12 @@ services:
         cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
         mem_limit: 8M
         restart: on-failure
-    dummy:
+    tcp_message_emitter:
         depends_on: [ dockerhost ]
-        image: appropriate/curl
-        command: ["http://dockerhost:8080"]
+        image: alpine
+        command: [ "sh", "-c", "while :; do date; sleep 1; done | nc 'dockerhost' 2323 -v"]
+    udp_message_emitter:
+        depends_on: [ dockerhost ]
+        image: alpine
+        command: [ "sh", "-c", "while :; do date; sleep 1; done | nc 'dockerhost' 5353 -u -v"]
 ```

@@ -15,7 +15,11 @@ fi
 
 FORWARDING_PORTS=${PORTS:-'0:65535'}
 
-iptables -t nat -I PREROUTING -p tcp --match multiport --dports "$FORWARDING_PORTS" -j DNAT --to-destination $DOCKER_HOST
+iptables --table nat --insert PREROUTING --protocol tcp \
+  --match multiport --dports "$FORWARDING_PORTS" --jump DNAT --to-destination $DOCKER_HOST
+iptables --table nat --insert PREROUTING --protocol udp \
+  --match multiport --dports "$FORWARDING_PORTS" --jump DNAT --to-destination $DOCKER_HOST
+
 iptables -t nat -I POSTROUTING -j MASQUERADE
 
 trap "exit 0;" TERM INT
