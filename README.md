@@ -74,7 +74,7 @@ docker run --rm \
   --link 'dockerhost' \
   -it alpine nc 'dockerhost' 2323 -v
 ```
-#### This example will let you send messages to **TCP** `netcat` server on docker host.
+#### This example will let you send messages to **UDP** `netcat` server on docker host.
 ```sh
 docker run --rm \
   --link 'dockerhost' \
