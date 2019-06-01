@@ -18,6 +18,8 @@ This allows you to use this image to forward traffic to arbitrary destinations, 
 
 `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
 
+Also be sure to configure your firewall of the host system to allow the `dockerhost` container to communicate with the host on your relevant port. [Example](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038)
+
 # Example
 This example will send messages from docker container to docker host with `netcat`
 
