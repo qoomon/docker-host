@@ -26,7 +26,7 @@ This example will send messages from docker container to docker host with `netca
 ### Prerequisite
 Start `netcat` server **TCP** on port `2323` to receive and display messages
 ```sh
-nc 127.0.0.1 8080 -lk
+nc 127.0.0.1 2323 -lk
 ```
 Start `netcat` server **UDP** on port `5353` to receive and display messages
 ```sh
