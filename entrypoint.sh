@@ -20,7 +20,6 @@ echo "Forwarding ports: $FORWARDING_PORTS"
 # setup forwarding rules
 for forwarding_port in $(echo "$FORWARDING_PORTS" | tr ";" " ")
 do
-  echo $forwarding_port
   iptables --table nat --insert PREROUTING \
     --protocol tcp \
     --dport "$forwarding_port" \
