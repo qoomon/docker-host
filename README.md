@@ -20,10 +20,12 @@ This allows you to use this image to forward traffic to arbitrary destinations, 
 
 Also be sure to configure your firewall of the host system to allow the `dockerhost` container to communicate with the host on your relevant port. [Example](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038)
 
+---
+
 # Examples
 These examples will send messages from docker container to docker host with `netcat`
 
-## Prerequisite
+### Preparation
 Start `netcat` server **TCP** on port `2323` to receive and display messages
 ```sh
 nc 127.0.0.1 2323 -lk
