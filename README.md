@@ -7,18 +7,23 @@
 
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
-Docker image to forward **TCP** and **UDP** traffic to the docker host 
-* uses dns entry `host.docker.internal` if available
-* or default gateway as docker host
+Docker image to forward **TCP** and **UDP** traffic to the docker host. 
 
-You can manually override the destination IP address by setting the environment variable `DOCKER_HOST`.
-This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
+This container will determine docker host address in the following order
+* Use ip from environment variable `DOCKER_HOST` if set
+  * This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
+* Try to resolve `host.docker.internal` (`getent ahostsv4 host.docker.internal`)
+* Defaults to default gateway (`ip -4 route show default`)
 
-⚠️ On **Linux systems** you have to bind your host applications to `bridge` network gateway in addition to localhost(127.0.0.1), if you want to reach them through docker-host container. Use following docker command to get the bridge network gateway IP address 
+⚠️ On **Linux systems** 
 
-`docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
+* You have to bind your host applications to `bridge` network gateway in addition to localhost(127.0.0.1). 
 
-Also be sure to configure your firewall of the host system to allow the `dockerhost` container to communicate with the host on your relevant port. [Example](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038)
+  Use following docker command to get the bridge network gateway IP address 
+
+  `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
+
+* Configure your firewall of the host system to allow the docker-host container to communicate with the host on your relevant port. [Example](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038)
 
 ---
 
