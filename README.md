@@ -23,7 +23,7 @@ This container will determine docker host address in the following order
 
   `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
 
-* Configure your firewall of the host system to allow the docker-host container to communicate with the host on your relevant port. [Example](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038)
+* You might need to configure your firewall of the host system to allow the docker-host container to communicate with the host on your relevant port, see [#21](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038).
 
 ---
 
