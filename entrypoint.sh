@@ -12,7 +12,7 @@ if ! cap_support 'cap_net_admin' || ! cap_support 'cap_net_raw'; then
   exit 1
 fi
 
-if [ -n "$DOCKER_HOST" ]; then
+if [ "$DOCKER_HOST" ]; then
   docker_host_ipv4="$(getent ahostsv4 "$DOCKER_HOST" | head -n1 | cut -d' ' -f1)"
   if [ "$docker_host_ipv4" != "$DOCKER_HOST" ]; then
     echo "Docker Host: ${docker_host_ipv4:-'n/a'} ($DOCKER_HOST)"
@@ -22,7 +22,7 @@ if [ -n "$DOCKER_HOST" ]; then
 else
   DOCKER_HOST='host.docker.internal'
   docker_host_ipv4="$(getent ahostsv4 "$DOCKER_HOST" | head -n1 | cut -d' ' -f1)"
-  if [ -n "$docker_host_ipv4" ]; then
+  if [ "$docker_host_ipv4" ]; then
     echo "Docker Host: $docker_host_ipv4 ($DOCKER_HOST)"
   else
     docker_host_ipv4=$(ip -4 route show default | cut -d' ' -f3)
@@ -31,7 +31,7 @@ else
 fi
 
 # exit if docker host ip could not be determined
-if [ -z "$docker_host_ipv4" ]; then
+if [ ! "$docker_host_ipv4" ]; then
   exit 1
 fi
 
