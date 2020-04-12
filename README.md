@@ -44,7 +44,7 @@ nc 127.0.0.1 5353 -lk -u -w0
 Run the dockerhost container.
 ```sh
 docker run --rm \
-  --name 'dockerhost' \
+  --name 'host.docker.internal' \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
   --restart on-failure \
   -d qoomon/docker-host
@@ -54,14 +54,14 @@ The dockerhost will be reachable through the domain/link `dockerhost` of the doc
 #### This example will let you send messages to **TCP** `netcat` server on docker host.
 ```sh
 docker run --rm \
-  --link 'dockerhost' \
-  -it alpine nc 'dockerhost' 2323 -v
+  --link 'host.docker.internal' \
+  -it alpine nc 'host.docker.internal' 2323 -v
 ```
 #### This example will let you send messages to **UDP** `netcat` server on docker host.
 ```sh
 docker run --rm \
-  --link 'dockerhost' \
-  -it alpine nc 'dockerhost' 5353 -u -v
+  --link 'host.docker.internal' \
+  -it alpine nc 'host.docker.internal' 5353 -u -v
 ```
 
 ## Docker Network
@@ -72,25 +72,25 @@ docker network create "$network_name"
 ```
 Run the dockerhost container within the dockerhost network.
 ```sh
-docker run --name "${network_name}-dockerhost" \
+docker run --name "${network_name}-host.docker.internal" \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
   --restart on-failure \
-  --net=${network_name} --network-alias 'dockerhost' \
+  --net=${network_name} --network-alias 'host.docker.internal' \
   qoomon/docker-host
 ```
 Run your application container within the dockerhost network.
-The dockerhost will be reachable through the domain/link `dockerhost` of the dockerhost container
+The dockerhost will be reachable through the domain/link `host.docker.internal` of the dockerhost container
 #### This example will let you send messages to **TCP** `netcat` server on docker host.
 ```sh
 docker run --rm \
-  --link 'dockerhost' \
-  -it alpine nc 'dockerhost' 2323 -v
+  --link 'host.docker.internal' \
+  -it alpine nc 'host.docker.internal' 2323 -v
 ```
 #### This example will let you send messages to **UDP** `netcat` server on docker host.
 ```sh
 docker run --rm \
-  --link 'dockerhost' \
-  -it alpine nc 'dockerhost' 5353 -u -v
+  --link 'host.docker.internal' \
+  -it alpine nc 'host.docker.internal' 5353 -u -v
 ```
 
 ## Docker Compose
@@ -98,17 +98,17 @@ docker run --rm \
 version: '2'
 
 services:
-    dockerhost:
+    host.docker.internal:
         image: qoomon/docker-host
         cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
         mem_limit: 8M
         restart: on-failure
     tcp_message_emitter:
-        depends_on: [ dockerhost ]
+        depends_on: [ host.docker.internal ]
         image: alpine
-        command: [ "sh", "-c", "while :; do date; sleep 1; done | nc 'dockerhost' 2323 -v"]
+        command: [ "sh", "-c", "while :; do date; sleep 1; done | nc 'host.docker.internal' 2323 -v"]
     udp_message_emitter:
-        depends_on: [ dockerhost ]
+        depends_on: [ host.docker.internal ]
         image: alpine
-        command: [ "sh", "-c", "while :; do date; sleep 1; done | nc 'dockerhost' 5353 -u -v"]
+        command: [ "sh", "-c", "while :; do date; sleep 1; done | nc 'host.docker.internal' 5353 -u -v"]
 ```
