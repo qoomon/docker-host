@@ -43,7 +43,8 @@ nc 127.0.0.1 5353 -lk -u -w0
 ## Docker Link
 Run the dockerhost container.
 ```sh
-docker run --name 'dockerhost' \
+docker run --rm \
+  --name 'dockerhost' \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
   --restart on-failure \
   -d qoomon/docker-host
