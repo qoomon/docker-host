@@ -10,7 +10,7 @@ jobs:
  
     steps:
     - uses: actions/checkout@master
-    
+
     - name: Add GITHUB Environment Variables
       run: |
         echo ::set-env name=GITHUB_REF_NAME::"${GITHUB_REF#refs/*/}"
@@ -42,6 +42,7 @@ jobs:
           --platform linux/amd64,linux/arm/v7,linux/arm64
     
     - name: login to docker hub
+      if: ${{ env.GITHUB_BRANCH == 'master' || startsWith(env.GITHUB_TAG, 'v')  }}
       run: |
         echo "${{ secrets.DOCKERHUB_PASSWORD }}" |
           docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
@@ -51,26 +52,19 @@ jobs:
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
       run: |
-        DOCKER_REPOSITORY=$(
-          echo ${GITHUB_REPOSITORY} |
-            tr '[:upper:]' '[:lower:]' |
-            sed 's/[^a-zA-Z0-9.]/-/g' |
-            sed 's/--*/-/g' |
-            sed 's/^-*//;s/-*$//'
-        )
-        
+        DOCKER_REPOSITORY="${GITHUB_REPOSITORY}"
         DOCKER_TAG=$(
           if [ "${GITHUB_BRANCH}" ]
           then 
-            if [ "${GITHUB_BRANCH}" == 'master' ]
+            if [[ "${GITHUB_BRANCH}" = 'master' ]]
             then echo "latest"
             else echo "${GITHUB_BRANCH/\//-}"
             fi
-          elif [ "$GITHUB_TAG" = v*]
+          elif [[ "$GITHUB_TAG" = v* ]]
           then echo ${GITHUB_TAG#v}
           fi
         )
-
+        echo "image tag: ${DOCKER_REPOSITORY}:${DOCKER_TAG}"
         docker buildx build --push . \
           --platform linux/amd64,linux/arm/v7,linux/arm64 \
           --tag ${DOCKER_REPOSITORY}:${DOCKER_TAG}
