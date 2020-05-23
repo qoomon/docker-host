@@ -1,6 +1,6 @@
-name: Docker Image CI
+name: Build
 
-on: [push]
+on: [push,]
 
 jobs:
 
@@ -10,5 +10,67 @@ jobs:
  
     steps:
     - uses: actions/checkout@master
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    
+    - name: Add GITHUB Environment Variables
+      run: |
+        echo ::set-env name=GITHUB_REF_NAME::"${GITHUB_REF#refs/*/}"
+        if [[ "${GITHUB_REF}" = refs/heads/* ]]
+        then 
+          echo ::set-env name=GITHUB_BRANCH::"${GITHUB_REF#refs/heads/}"
+        elif [[ "${GITHUB_REF}" = refs/tags/* ]]
+        then 
+          echo ::set-env name=GITHUB_TAG::"${GITHUB_REF#refs/tags/}"
+        fi
+    
+    - name: lint dockerfile
+      run: docker run --rm -v "$PWD/Dockerfile:/Dockerfile:ro" redcoolbeans/dockerlint
+    
+    - name: install docker buildx
+      id: buildx
+      uses: crazy-max/ghaction-docker-buildx@v1
+      with:
+        buildx-version: latest
+        qemu-version: latest
+    
+    - name: build docker images
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+      run: |
+        docker buildx create --name builder --use
+        docker buildx inspect --bootstrap
+        docker buildx build . \
+          --platform linux/amd64,linux/arm/v7,linux/arm64
+    
+    - name: login to docker hub
+      run: |
+        echo "${{ secrets.DOCKERHUB_PASSWORD }}" |
+          docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          
+    - name: push docker images
+      if: ${{ env.GITHUB_BRANCH == 'master' || startsWith(env.GITHUB_TAG, 'v')  }}
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+      run: |
+        DOCKER_REPOSITORY=$(
+          echo ${GITHUB_REPOSITORY} |
+            tr '[:upper:]' '[:lower:]' |
+            sed 's/[^a-zA-Z0-9.]/-/g' |
+            sed 's/--*/-/g' |
+            sed 's/^-*//;s/-*$//'
+        )
+        
+        DOCKER_TAG=$(
+          if [ "${GITHUB_BRANCH}" ]
+          then 
+            if [ "${GITHUB_BRANCH}" == 'master' ]
+            then echo "latest"
+            else echo "${GITHUB_BRANCH/\//-}"
+            fi
+          elif [ "$GITHUB_TAG" = v*]
+          then echo ${GITHUB_TAG#v}
+          fi
+        )
+
+        docker buildx build --push . \
+          --platform linux/amd64,linux/arm/v7,linux/arm64 \
+          --tag ${DOCKER_REPOSITORY}:${DOCKER_TAG}
