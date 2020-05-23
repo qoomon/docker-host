@@ -1,7 +1,7 @@
 
 # docker-host
 
-[![Build Status](https://travis-ci.com/qoomon/docker-host.svg?branch=master)](https://travis-ci.com/qoomon/docker-host)
+[![Build Workflow](https://github.com/qoomon/docker-host/workflows/Build/badge.svg)](https://github.com/qoomon/docker-host/actions)
 
 [![GitHub release](https://img.shields.io/github/release/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 
