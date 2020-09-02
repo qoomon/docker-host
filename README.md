@@ -110,3 +110,7 @@ services:
         image: alpine
         command: [ "sh", "-c", "while :; do date; sleep 1; done | nc 'docker-host' 5353 -u -v"]
 ```
+
+---
+### External References
+* https://medium.com/@sam_ngu/connecting-to-docker-host-mysql-from-docker-container-linux-ubuntu-766e526542fd
