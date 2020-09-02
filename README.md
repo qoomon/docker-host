@@ -112,5 +112,5 @@ services:
 ```
 
 ---
-### External References
+# External References
 * https://medium.com/@sam_ngu/connecting-to-docker-host-mysql-from-docker-container-linux-ubuntu-766e526542fd
