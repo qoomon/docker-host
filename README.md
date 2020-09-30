@@ -13,7 +13,7 @@ This container will determine docker host address in the following order
 * Try to resolve `host.docker.internal` (`getent ahostsv4 host.docker.internal`)
 * Defaults to default gateway (`ip -4 route show default`)
 
-⚠️ On **Linux systems** 
+#### ⚠️ On **Linux systems** 
 
 * You have to bind your host applications to `0.0.0.0` or `bridge` network gateway in addition to `127.0.0.1`. 
 
