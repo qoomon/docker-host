@@ -15,7 +15,7 @@ This container will determine docker host address in the following order
 
 ⚠️ On **Linux systems** 
 
-* You have to bind your host applications to `bridge` network gateway in addition to localhost(127.0.0.1). 
+* You have to bind your host applications to `0.0.0.0` or `bridge` network gateway in addition to `127.0.0.1`. 
 
   Use following docker command to get the bridge network gateway IP address 
 
