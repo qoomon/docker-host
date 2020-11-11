@@ -13,13 +13,13 @@ jobs:
 
     - name: Add GITHUB Environment Variables
       run: |
-        echo ::set-env name=GITHUB_REF_NAME::"${GITHUB_REF#refs/*/}"
+        echo "GITHUB_REF_NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
         if [[ "${GITHUB_REF}" = refs/heads/* ]]
         then 
-          echo ::set-env name=GITHUB_BRANCH::"${GITHUB_REF#refs/heads/}"
+          echo "GITHUB_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
         elif [[ "${GITHUB_REF}" = refs/tags/* ]]
         then 
-          echo ::set-env name=GITHUB_TAG::"${GITHUB_REF#refs/tags/}"
+          echo "GITHUB_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
         fi
     
     - name: lint dockerfile
