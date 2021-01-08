@@ -67,7 +67,9 @@ jobs:
           fi
         elif [[ "$GITHUB_TAG" = v* ]]
         then 
-          DOCKER_TAGS=($(echo ${GITHUB_TAG#v} | tr "." "\n"))
+          VERSION=${GITHUB_TAG#v}
+          VERSION_PARTS=($(echo VERSION | tr "." "\n"))
+          DOCKER_TAGS=($VERSION ${VERSION_PARTS[1]})
         fi
         
         echo "image tag(s):"
