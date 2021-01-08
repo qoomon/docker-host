@@ -72,7 +72,7 @@ jobs:
         then 
           VERSION=${GITHUB_TAG#v}
           VERSION_PARTS=($(echo $VERSION | tr "." "\n"))
-          DOCKER_TAGS=($VERSION ${VERSION_PARTS[1]})
+          DOCKER_TAGS=($VERSION ${VERSION_PARTS[0]})
         fi
         
         echo "image tag(s):"
