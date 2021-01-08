@@ -55,18 +55,23 @@ jobs:
         DOCKER_CLI_EXPERIMENTAL: enabled
       run: |
         DOCKER_REPOSITORY="${GITHUB_REPOSITORY}"
-        DOCKER_TAG=$(
-          if [ "${GITHUB_BRANCH}" ]
+        DOCKER_TAGS=()
+        
+        if [ "${GITHUB_BRANCH}" ]
+        then 
+          if [[ "${GITHUB_BRANCH}" = 'master' ]]
           then 
-            if [[ "${GITHUB_BRANCH}" = 'master' ]]
-            then echo "latest"
-            else echo "${GITHUB_BRANCH/\//-}"
-            fi
-          elif [[ "$GITHUB_TAG" = v* ]]
-          then echo ${GITHUB_TAG#v}
+            DOCKER_TAGS=(latest)
+          else 
+            DOCKER_TAGS=(${GITHUB_BRANCH/\//-})
           fi
-        )
-        echo "image tag: ${DOCKER_REPOSITORY}:${DOCKER_TAG}"
+        elif [[ "$GITHUB_TAG" = v* ]]
+        then 
+          DOCKER_TAGS=($(echo ${GITHUB_TAG#v} | tr "." "\n"))
+        fi
+        
+        echo "image tag(s):"
+        printf "  ${DOCKER_REPOSITORY}:%s\n" "${DOCKER_TAGS[@]}"
         docker buildx build --push . \
           --platform linux/amd64,linux/arm/v7,linux/arm64 \
-          --tag ${DOCKER_REPOSITORY}:${DOCKER_TAG}
+          ${DOCKER_TAGS[@]/#/--tag ${DOCKER_REPOSITORY}:}
