@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+env:
+  DOCKER_BUILDX_PLATFORM: linux/amd64,linux/arm/v7,linux/arm64
+
 jobs:
 
   build:
@@ -41,7 +44,7 @@ jobs:
         docker buildx create --name builder --use
         docker buildx inspect --bootstrap
         docker buildx build . \
-          --platform linux/amd64,linux/arm/v7,linux/arm64
+          --platform "${{ env.DOCKER_BUILDX_PLATFORM }}"
     
     - name: login to docker hub
       if: ${{ env.GITHUB_BRANCH == 'master' || startsWith(env.GITHUB_TAG, 'v')  }}
@@ -54,7 +57,7 @@ jobs:
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
       run: |
-        DOCKER_REPOSITORY="${GITHUB_REPOSITORY}"
+        DOCKER_REPOSITORY="$GITHUB_REPOSITORY"
         DOCKER_TAGS=()
         
         if [ "${GITHUB_BRANCH}" ]
@@ -68,12 +71,12 @@ jobs:
         elif [[ "$GITHUB_TAG" = v* ]]
         then 
           VERSION=${GITHUB_TAG#v}
-          VERSION_PARTS=($(echo VERSION | tr "." "\n"))
+          VERSION_PARTS=($(echo $VERSION | tr "." "\n"))
           DOCKER_TAGS=($VERSION ${VERSION_PARTS[1]})
         fi
         
         echo "image tag(s):"
         printf "  ${DOCKER_REPOSITORY}:%s\n" "${DOCKER_TAGS[@]}"
         docker buildx build --push . \
-          --platform linux/amd64,linux/arm/v7,linux/arm64 \
+          --platform "${{ env.DOCKER_BUILDX_PLATFORM }}" \
           ${DOCKER_TAGS[@]/#/--tag ${DOCKER_REPOSITORY}:}
