@@ -5,6 +5,11 @@
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 [![Build Workflow](https://github.com/qoomon/docker-host/workflows/Build/badge.svg)](https://github.com/qoomon/docker-host/actions?query=workflow%3ABuild)
 
+Docker Image Tags:
+* `latest`
+* `2`
+* `2.x.x`
+
 Docker image to forward **TCP** and **UDP** traffic to the docker host. 
 
 This container will determine docker host address in the following order
