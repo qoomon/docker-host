@@ -3,11 +3,6 @@ name: Build
 on: 
   push:
   workflow_dispatch:
-    inputs:
-      commmit_ref:
-        description: 'Commit Ref'     
-        required: true
-        default: 'master'
 
 jobs:
 
@@ -17,8 +12,6 @@ jobs:
  
     steps:
     - uses: actions/checkout@master
-      with:
-        ref: ${{ github.event.inputs.commmit_ref }} 
 
     - name: Add GITHUB Environment Variables
       run: |
