@@ -5,6 +5,8 @@
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 [![Build Workflow](https://github.com/qoomon/docker-host/workflows/Build/badge.svg)](https://github.com/qoomon/docker-host/actions?query=workflow%3ABuild)
 
+[![Sparkline](https://stars.medv.io/qoomon/docker-host.svg)](https://stars.medv.io/qoomon/docker-host)
+
 Docker Image Tags:
 * `latest`
 * `2`
