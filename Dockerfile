@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.12
 
 RUN apk --update --no-cache add iptables libcap
 
