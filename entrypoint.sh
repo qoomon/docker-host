@@ -2,9 +2,11 @@
 set -e # exit on error
 
 function checkpcaps {
-  local pid=$1; shift
-  local caps="$(getpcaps $pid 2>&1 | sed 's/^.*=//'),"
-  for cap in "$@"; do [ -z "${caps##*$cap,*}" ] || return 1; done
+  local process_caps="$(getpcaps $$),"
+  for required_cap in "$@"
+  do 
+    echo "$process_caps" | grep -q "${required_cap}," || return 1
+  done
 }
 
 function resolveHost { 
@@ -12,7 +14,7 @@ function resolveHost {
 }
 
 # ensure network capabilities
-if ! checkpcaps $$ 'cap_net_admin' 'cap_net_raw'
+if ! checkpcaps 'cap_net_admin' 'cap_net_raw'
 then
   echo "[ERROR] docker-host container needs Linux capabilities NET_ADMIN and NET_RAW"
   echo "  e.g 'docker run --cap-add=NET_ADMIN --cap-add=NET_RAW ...'"

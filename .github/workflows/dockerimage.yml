@@ -2,7 +2,10 @@ name: Build
 
 on: 
   push:
-  workflow_dispatch:
+    branches:
+      - "*"
+    tags:
+      - "v*"
 
 env:
   DOCKER_BUILDX_PLATFORM: linux/amd64,linux/arm/v7,linux/arm64
@@ -62,17 +65,12 @@ jobs:
         
         if [ "${GITHUB_BRANCH}" ]
         then 
-          if [[ "${GITHUB_BRANCH}" = 'master' ]]
-          then 
-            DOCKER_TAGS=(latest)
-          else 
-            DOCKER_TAGS=(${GITHUB_BRANCH/\//-})
-          fi
+          DOCKER_TAGS=(${GITHUB_BRANCH/\//-})
         elif [[ "$GITHUB_TAG" = v* ]]
         then 
           VERSION=${GITHUB_TAG#v}
           VERSION_PARTS=($(echo $VERSION | tr "." "\n"))
-          DOCKER_TAGS=($VERSION ${VERSION_PARTS[0]})
+          DOCKER_TAGS=(latest $VERSION ${VERSION_PARTS[0]})
         fi
         
         echo "image tag(s):"
