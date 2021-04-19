@@ -71,10 +71,5 @@ do
 done
 
 
-# exit on `ctrl + c`
-trap "exit 0;" TERM INT
-
 # Ah, ha, ha, ha, stayin' alive...
-while true; do :; done &
-kill -STOP $!
-wait $!
+while true; do sleep infinity; done
