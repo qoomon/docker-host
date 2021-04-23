@@ -1,6 +1,8 @@
 FROM alpine:3.13
 
-RUN apk --update --no-cache add iptables libcap
+RUN apk add --update --no-cache \
+  iptables \
+  libcap
 
 COPY ./entrypoint.sh /
 
