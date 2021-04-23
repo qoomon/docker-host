@@ -66,7 +66,7 @@ then
   # --- Configure iptables -----------------------------------------------------
 
   # setup port forwarding
-  FORWARDING_PORTS="$(echo ${PORTS:-'0:65535'} | sed 's/[ ,;][ ,;]*/ /g')"
+  FORWARDING_PORTS="$(echo ${PORTS:-'1:65535'} | sed 's/[ ,;][ ,;]*/ /g')"
   echo "Forwarding ports: ${FORWARDING_PORTS// /,}"
 
   iptables -t nat -I POSTROUTING -j MASQUERADE

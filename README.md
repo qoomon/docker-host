@@ -19,7 +19,7 @@ This container will determine docker host address in the following order
 * Try to resolve `host.docker.internal` (`getent ahostsv4 host.docker.internal`)
 * Defaults to default gateway (`ip -4 route show default`)
 
-By default all ports (`0:65535`) are forwarded to docker host you can override ports by setting environment variable `PORTS` to a comma separated list of ports and/or port ranges e.g `443,80,8000:9000`
+By default all ports (`1:65535`) are forwarded to docker host you can override ports by setting environment variable `PORTS` to a comma separated list of ports and/or port ranges e.g `443,80,8000:9000`
 Ports can be also forwarded to different host's ports by adding `@` and egress port or port range to ingress ports e.g `443@4443,80@7080,8000:9000@9000:10000`.
 
 #### ⚠️ On **Linux systems** 
