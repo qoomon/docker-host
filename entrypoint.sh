@@ -71,17 +71,17 @@ then
   iptables -t nat -I POSTROUTING -j MASQUERADE
   for forwarding_port in $FORWARDING_PORTS
   do
-    forwarding_ingress_port="$(echo "$forwarding_port" | cut -d':' -f1)"
-    forwarding_egress_port="$(echo "$forwarding_port" | cut -d':' -f2)"
-    forwarding_egress_port="${forwarding_egress_port:-$forwarding_ingress_port}"
-    forwarding_egress_port="${forwarding_egress_port/:/-}"
+    docker_container_port="$(echo "$forwarding_port" | cut -d':' -f1)"
+    docker_host_port="$(echo "$forwarding_port" | cut -d':' -f2)"
+    docker_host_port="${docker_host_port:-$docker_container_port}"
+    docker_host_port="${docker_host_port/:/-}"
 
     iptables --table nat --insert PREROUTING \
-      --protocol tcp --destination-port "${forwarding_ingress_port/-/:}" \
-      --jump DNAT --to-destination "$docker_host_ip:$forwarding_egress_port"
+      --protocol tcp --destination-port "${docker_container_port/-/:}" \
+      --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
     iptables --table nat --insert PREROUTING \
-      --protocol udp --destination-port "${forwarding_ingress_port/-/:}" \
-      --jump DNAT --to-destination "$docker_host_ip:$forwarding_egress_port"
+      --protocol udp --destination-port "${docker_container_port/-/:}" \
+      --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
   done
   
   # --- Drop root access -------------------------------------------------------
