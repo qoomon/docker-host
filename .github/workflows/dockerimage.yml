@@ -51,9 +51,6 @@ jobs:
         docker buildx build . \
           --tag local/docker-host \
           --load
-          
-    - name: scan docker images
-      run: docker --version && docker scan local/docker-host
     
     - name: login to docker hub
       if: ${{ env.GITHUB_BRANCH == 'master' || startsWith(env.GITHUB_TAG, 'v')  }}
