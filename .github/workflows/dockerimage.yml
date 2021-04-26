@@ -48,6 +48,12 @@ jobs:
         docker buildx inspect --bootstrap
         docker buildx build . \
           --platform "${{ env.DOCKER_BUILDX_PLATFORM }}"
+        docker buildx build . \
+          --tag local/docker-host \
+          --load
+          
+    - name: scan docker images
+      run: docker scan local/docker-host
     
     - name: login to docker hub
       if: ${{ env.GITHUB_BRANCH == 'master' || startsWith(env.GITHUB_TAG, 'v')  }}
