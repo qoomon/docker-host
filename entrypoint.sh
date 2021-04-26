@@ -59,7 +59,7 @@ then
   # exit if docker host ip could not be determined
   if [ ! "$docker_host_ip" ]
   then
-    echo "[ERROR] docker-host container could not determine docker host ip"
+    echo "[ERROR] could not determine docker host ip"
     exit 1
   fi
 
@@ -67,7 +67,7 @@ then
 
   # setup port forwarding
   FORWARDING_PORTS="$(echo "${PORTS:-'1-65535'}" | sed 's/[ ,][ ,]*/ /g')"
-  echo "Forwarding ports: $FORWARDING_PORTS"
+  echo "Forwarding ports: ${FORWARDING_PORTS// /, }"
   iptables -t nat -I POSTROUTING -j MASQUERADE
   for forwarding_port in $FORWARDING_PORTS
   do
