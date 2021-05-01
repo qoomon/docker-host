@@ -2,12 +2,10 @@
 set -e # exit on error
 
 # --- Setup --------------------------------------------------------------------
-
+# run setup as root, drop root access after 
 if [ "$(whoami)" = 'root' ]
 then
-  # run setup as root, drop root access after 
-  
-  
+
   # --- Ensure container network capabilities ----------------------------------
   
   function checkpcaps {
