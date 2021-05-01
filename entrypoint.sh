@@ -3,11 +3,12 @@ set -e # exit on error
 
 # --- Setup --------------------------------------------------------------------
 
-# run as root, drop root access after setup
 if [ "$(whoami)" = 'root' ]
 then
-
-  # --- Ensure container capabilities ------------------------------------------
+  # run setup as root, drop root access after 
+  
+  
+  # --- Ensure container network capabilities ----------------------------------
   
   function checkpcaps {
     local process_caps="$(getpcaps $$),"
@@ -17,7 +18,6 @@ then
     done
   }
 
-  # ensure network capabilities
   if ! checkpcaps 'cap_net_admin' 'cap_net_raw'
   then
     echo "[ERROR] docker-host container needs Linux capabilities NET_ADMIN and NET_RAW"
@@ -25,13 +25,13 @@ then
     exit 1
   fi
   
-  # --- Determine host address -------------------------------------------------
+  
+  # --- Determine host ip address ----------------------------------------------
   
   function resolveHost { 
     getent ahostsv4 "$1" | head -n1 | cut -d' ' -f1
   }
 
-  # determine docker host ip
   if [ "$DOCKER_HOST" ]
   then
     docker_host_ip="$(resolveHost "$DOCKER_HOST")"
@@ -56,16 +56,15 @@ then
     fi
   fi
 
-  # exit if docker host ip could not be determined
   if [ ! "$docker_host_ip" ]
   then
     echo "[ERROR] could not determine docker host ip"
     exit 1
   fi
 
-  # --- Configure iptables -----------------------------------------------------
 
-  # setup port forwarding
+  # --- Configure iptables to forward all ports to docker host -----------------
+
   FORWARDING_PORTS="$(echo "${PORTS:-1-65535}" | sed 's/[ ,][ ,]*/ /g')"
   echo "Forwarding ports: ${FORWARDING_PORTS// /, }"
   iptables -t nat -I POSTROUTING -j MASQUERADE
@@ -83,6 +82,7 @@ then
       --protocol udp --destination-port "${docker_container_port/-/:}" \
       --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
   done
+  
   
   # --- Drop root access -------------------------------------------------------
   exec su -s /bin/sh nobody "$0" -- "$@"
