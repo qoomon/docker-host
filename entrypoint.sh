@@ -2,20 +2,20 @@
 set -e # exit on error
 
 # --- Setup --------------------------------------------------------------------
-# run setup as root, drop root access after 
+# run setup as root, finally drop root access 
 if [ "$(whoami)" = 'root' ]
 then
-
+  
   # --- Ensure container network capabilities ----------------------------------
   
   function checkpcaps {
     local process_caps="$(getpcaps $$),"
     for required_cap in "$@"
-    do 
-      echo "$process_caps" | grep -q "${required_cap}," || return 1
+    do
+      echo "$process_caps" | grep -q "$required_cap," || return 1
     done
   }
-
+  
   if ! checkpcaps 'cap_net_admin' 'cap_net_raw'
   then
     echo "[ERROR] docker-host container needs Linux capabilities NET_ADMIN and NET_RAW"
@@ -29,57 +29,58 @@ then
   function resolveHost { 
     getent ahostsv4 "$1" | head -n1 | cut -d' ' -f1
   }
-
+  
   if [ "$DOCKER_HOST" ]
   then
+    docker_host_source="DOCKER_HOST=$DOCKER_HOST"
     docker_host_ip="$(resolveHost "$DOCKER_HOST")"
-    if [ "$docker_host_ip" != "$DOCKER_HOST" ]
+    
+    if [ ! "$docker_host_ip" ]
     then
-      echo "Docker Host: ${docker_host_ip:-'n/a'} ($DOCKER_HOST)"
-    else
-      echo "Docker Host: ${docker_host_ip:-'n/a'}"
+      echo "[ERROR] could not resolve DOCKER_HOST=$DOCKER_HOST"
+      exit 1
     fi
   else
     DOCKER_HOST='host.docker.internal'
+    docker_host_source="$DOCKER_HOST"
     docker_host_ip="$(resolveHost "$DOCKER_HOST")"
-    if [ "$docker_host_ip" ]
+    
+    if [ ! "$docker_host_ip" ]
     then
-      echo "Docker Host: $docker_host_ip ($DOCKER_HOST)"
-    else
-      docker_host_ip=$(ip -4 route show default | cut -d' ' -f3)
-      if [ "$docker_host_ip" ]
-      then
-        echo "Docker Host: $docker_host_ip (default gateway)"
-      fi
+      docker_host_source='default gateway'
+      docker_host_ip="$(ip -4 route show default | cut -d' ' -f3)"
+    fi
+    
+    if [ ! "$docker_host_ip" ]
+    then
+      echo "[ERROR] could not determine docker host ip"
+      exit 1
     fi
   fi
-
-  if [ ! "$docker_host_ip" ]
-  then
-    echo "[ERROR] could not determine docker host ip"
-    exit 1
-  fi
-
-
+  
+  echo "Docker Host: $docker_host_ip ($docker_host_source)"
+  
+  
   # --- Configure iptables to forward all ports to docker host -----------------
-
-  FORWARDING_PORTS="$(echo "${PORTS:-1-65535}" | sed 's/[ ,][ ,]*/ /g')"
-  echo "Forwarding ports: ${FORWARDING_PORTS// /, }"
-  iptables -t nat -I POSTROUTING -j MASQUERADE
-  for forwarding_port in $FORWARDING_PORTS
+  
+  PORTS="$(echo "${PORTS:-"1-65535"}" | sed 's/[ ,][ ,]*/ /g')"
+  
+  echo "Forwarding ports: ${PORTS// /, }"
+  for forwarding_port in $PORTS
   do
-    docker_container_port="$(echo "$forwarding_port" | cut -d':' -f1)"
-    docker_host_port="$(echo "$forwarding_port" | cut -d':' -f2)"
-    docker_host_port="${docker_host_port:-$docker_container_port}"
-    docker_host_port="${docker_host_port/:/-}"
-
-    iptables --table nat --insert PREROUTING \
-      --protocol tcp --destination-port "${docker_container_port/-/:}" \
+    docker_container_port="${forwarding_port%%:*}"
+    docker_host_port="${forwarding_port#*:}"
+    
+    iptables --table nat --insert PREROUTING --protocol tcp \
+      --destination-port "${docker_container_port/-/:}" \
       --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
-    iptables --table nat --insert PREROUTING \
-      --protocol udp --destination-port "${docker_container_port/-/:}" \
+    
+    iptables --table nat --insert PREROUTING --protocol udp \
+      --destination-port "${docker_container_port/-/:}" \
       --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
   done
+  
+  iptables --table nat --inser POSTROUTING --jump MASQUERADE
   
   
   # --- Drop root access -------------------------------------------------------
