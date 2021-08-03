@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e # exit on error
 
+# this script will be executed as nobody again, see last line of this file
 if [ "$(whoami)" = nobody ]
 then
   sleep infinity
