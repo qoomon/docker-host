@@ -1,13 +1,6 @@
 #!/bin/sh
 set -e # exit on error
 
-# this script will be executed as nobody again, see last line of this file
-if [ "$(whoami)" = nobody ]
-then
-  sleep infinity
-  exit 1
-fi
-
 # --- Ensure container network capabilities ----------------------------------
 
 if ! capsh --has-p='cap_net_admin' --has-p='cap_net_raw' &>/dev/null
@@ -20,7 +13,7 @@ fi
 
 # --- Determine docker host address ------------------------------------------
 
-function _resolve_host { 
+function _resolve_host {
   getent ahostsv4 "$1" | head -n1 | cut -d' ' -f1
 }
 
@@ -79,6 +72,7 @@ done
 iptables --table nat --insert POSTROUTING --jump MASQUERADE
 
 
-# --- Drop root access -------------------------------------------------------
+# --- Drop root access and "Ah, ha, ha, ha, stayin' alive" ---------------------
 
-exec su nobody -s "$0"
+# utilize trap to handle docker stop (SIGTERM) and manual interrupt (SIGINT)
+exec su nobody -s /bin/sh  -c 'trap : TERM INT; sleep infinity & wait'
