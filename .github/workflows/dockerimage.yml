@@ -40,8 +40,6 @@ jobs:
 
     - name: build docker images
       run: |
-        docker buildx create --name builder --use
-        docker buildx inspect --bootstrap
         docker buildx build . \
           --platform "${{ env.DOCKER_BUILDX_PLATFORM }}"
         docker buildx build . \
