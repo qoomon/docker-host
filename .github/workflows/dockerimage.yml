@@ -33,7 +33,7 @@ jobs:
       run: docker run --rm -v "$PWD/Dockerfile:/Dockerfile:ro" redcoolbeans/dockerlint
 
     - name: Set up Docker QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@v1
