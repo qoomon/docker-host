@@ -85,8 +85,7 @@ done
 
 iptables --table nat --insert POSTROUTING --jump MASQUERADE
 
-
 # --- Drop root access and "Ah, ha, ha, ha, stayin' alive" ---------------------
 
 # utilize trap to handle docker stop (SIGTERM) and manual interrupt (SIGINT)
-exec su nobody -s /bin/sh  -c 'trap : TERM INT; sleep infinity & wait'
+exec su nobody -s /bin/sh -c 'trap : TERM INT; sleep infinity & wait'
