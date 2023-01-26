@@ -1,5 +1,9 @@
-#!/bin/sh
-set -e # exit on error
+#!/bin/bash
+
+# Use unofficial strict mode of Bash:
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
 
 # --- Ensure container network capabilities ----------------------------------
 
@@ -14,10 +18,12 @@ fi
 # --- Determine docker host address ------------------------------------------
 
 function _resolve_host {
-  getent ahostsv4 "$1" | head -n1 | cut -d' ' -f1
+  ip=$(getent ahostsv4 "$1" | head -n1 | cut -d' ' -f1)
+  echo "$ip"
 }
 
-if [ "$DOCKER_HOST" ]
+# Check if the docker host env var is set
+if [ ! -z "${DOCKER_HOST+x}" ]
 then
   docker_host_source="DOCKER_HOST=$DOCKER_HOST"
   docker_host_ip="$(_resolve_host "$DOCKER_HOST")"
