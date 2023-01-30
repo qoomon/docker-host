@@ -23,7 +23,7 @@ function _resolve_host {
 }
 
 # Check if the docker host env var is set
-if [ "${DOCKER_HOST}" ]
+if [ "$DOCKER_HOST" ]
 then
   docker_host_source="DOCKER_HOST=$DOCKER_HOST"
   docker_host_ip="$(_resolve_host "$DOCKER_HOST")"
