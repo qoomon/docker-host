@@ -1,9 +1,7 @@
 #!/bin/sh
-
-# Use unofficial strict mode of Bash:
-# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+# Use unofficial strict mode of Bash: http://redsymbol.net/articles/unofficial-bash-strict-mode/
 set -euo pipefail
-IFS=$'\n\t'
+c=$'\n\t'
 
 # --- Ensure container network capabilities ----------------------------------
 
@@ -37,14 +35,13 @@ else
   # Check if we can resolve some special hostnames
   # docker - host.docker.internal
   # podman - host.containers.internal
-  DOCKER_HOSTNAMES="host.docker.internal host.containers.internal"
+  DOCKER_HOSTNAMES=$'host.docker.internal\thost.containers.internal'
   docker_host_ip=""
 
   for docker_hostname in $DOCKER_HOSTNAMES
   do
     docker_host_source="$docker_hostname"
     docker_host_ip="$(_resolve_host "$docker_hostname")"
-    
     if [ "$docker_host_ip" ]
     then
       break
