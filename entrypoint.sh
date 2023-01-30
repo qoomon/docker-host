@@ -1,5 +1,9 @@
 #!/bin/sh
-set -e # exit on error
+
+# Use unofficial strict mode of Bash:
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
 
 # --- Ensure container network capabilities ----------------------------------
 
@@ -14,10 +18,12 @@ fi
 # --- Determine docker host address ------------------------------------------
 
 function _resolve_host {
-  getent ahostsv4 "$1" | head -n1 | cut -d' ' -f1
+  ip=$(getent ahostsv4 "$1" | head -n1 | cut -d' ' -f1)
+  echo "$ip"
 }
 
-if [ "$DOCKER_HOST" ]
+# Check if the docker host env var is set
+if [ "${DOCKER_HOST:-}" ]
 then
   docker_host_source="DOCKER_HOST=$DOCKER_HOST"
   docker_host_ip="$(_resolve_host "$DOCKER_HOST")"
@@ -28,15 +34,27 @@ then
     exit 1
   fi
 else
-  DOCKER_HOST='host.docker.internal'
-  docker_host_source="$DOCKER_HOST"
-  docker_host_ip="$(_resolve_host "$DOCKER_HOST")"
+  # Check if we can resolve some special hostnames
+  # docker - host.docker.internal
+  # podman - host.containers.internal
+  DOCKER_HOSTNAMES="host.docker.internal host.containers.internal"
+  docker_host_ip=""
 
-  if [ ! "$docker_host_ip" ]
-  then
-    DOCKER_HOST="$(ip -4 route show default | cut -d' ' -f3)"
+  for hostname in $HOSTNAMES
+  do
+    docker_host_source="$hostname"
+    docker_host_ip="$(_resolve_host "$hostname")"
+    
+    if [ "$docker_host_ip" ]
+    then
+      break
+    fi
+  done
+
+  # If none hostname resolves, then we try using the default gateway address
+  if [ ! "$docker_host_ip" ]; then
     docker_host_source="default gateway"
-    docker_host_ip="$DOCKER_HOST"
+    docker_host_ip="$(ip -4 route show default | cut -d' ' -f3)"
   fi
 
   if [ ! "$docker_host_ip" ]
@@ -71,8 +89,7 @@ done
 
 iptables --table nat --insert POSTROUTING --jump MASQUERADE
 
-
 # --- Drop root access and "Ah, ha, ha, ha, stayin' alive" ---------------------
 
 # utilize trap to handle docker stop (SIGTERM) and manual interrupt (SIGINT)
-exec su nobody -s /bin/sh  -c 'trap : TERM INT; sleep infinity & wait'
+exec su nobody -s /bin/sh -c 'trap : TERM INT; sleep infinity & wait'

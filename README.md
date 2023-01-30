@@ -11,12 +11,19 @@ Docker Image Tags:
 * `3`
 * `3.x.x`
 
-Docker image to forward **TCP** and **UDP** traffic to the docker host. 
+Docker image to forward **TCP** and **UDP** traffic to the docker host. This
+also works for (rootless) podman. This README.md uses the term docker, but you
+can read that as both `docker` and `podman` (it works for both), unless
+otherwise specified.
 
 This container will determine docker host address in the following order
 * Use ip from environment variable `DOCKER_HOST` if set
   * This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
-* Try to resolve `host.docker.internal` (`getent ahostsv4 host.docker.internal`)
+* Try to resolve host using DNS names e.g. `getent ahostsv4 host.docker.internal` 
+  * docker hostname `host.docker.internal` 
+  * podman hostname `host.containers.internal`
+
+
 * Defaults to default gateway (`ip -4 route show default`)
 
 #### Ports
@@ -35,6 +42,9 @@ By default all ports (`1-65535`) are forwarded to docker host.
   Use following docker command to get the bridge network gateway IP address 
 
   `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
+
+  > NOTE: For (rootless) podman, it's sufficient to bind to localhost, assuming
+  > default podman installation.
 
 * You might need to configure your firewall of the host system to allow the docker-host container to communicate with the host on your relevant port, see [#21](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038).
 
