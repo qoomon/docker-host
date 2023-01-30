@@ -34,7 +34,9 @@ then
     exit 1
   fi
 else
-  # If not, check if we can resolve some special Docker and Podman hostnames
+  # Check if we can resolve some special hostnames
+  # docker - host.docker.internal
+  # podman - host.containers.internal
   DOCKER_HOSTNAMES="host.docker.internal host.containers.internal"
   docker_host_ip=""
 
@@ -42,13 +44,14 @@ else
   do
     docker_host_source="$hostname"
     docker_host_ip="$(_resolve_host "$hostname")"
-
-    if [ "$docker_host_ip" ]; then
+    
+    if [ "$docker_host_ip" ]
+    then
       break
     fi
   done
 
-  # If both don't resolve, then we can only check the gateway
+  # If none hostname resolves, then we try using the default gateway address
   if [ ! "$docker_host_ip" ]; then
     docker_host_source="default gateway"
     docker_host_ip="$(ip -4 route show default | cut -d' ' -f3)"
