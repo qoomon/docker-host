@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Use unofficial strict mode of Bash:
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
@@ -35,12 +35,13 @@ then
   fi
 else
   # If not, check if we can resolve some special Docker and Podman hostnames
-  DOCKER_PODMAN_HOSTS=("host.docker.internal" "host.containers.internal")
+  DOCKER_HOSTNAMES="host.docker.internal host.containers.internal"
   docker_host_ip=""
 
-  for host in "${DOCKER_PODMAN_HOSTS[@]}"; do
-    docker_host_source="$host"
-    docker_host_ip="$(_resolve_host "$host")"
+  for hostname in $HOSTNAMES
+  do
+    docker_host_source="$hostname"
+    docker_host_ip="$(_resolve_host "$hostname")"
 
     if [ "$docker_host_ip" ]; then
       break
