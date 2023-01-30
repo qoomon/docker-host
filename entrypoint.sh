@@ -40,10 +40,10 @@ else
   DOCKER_HOSTNAMES="host.docker.internal host.containers.internal"
   docker_host_ip=""
 
-  for hostname in $HOSTNAMES
+  for docker_hostname in $DOCKER_HOSTNAMES
   do
-    docker_host_source="$hostname"
-    docker_host_ip="$(_resolve_host "$hostname")"
+    docker_host_source="$docker_hostname"
+    docker_host_ip="$(_resolve_host "$docker_hostname")"
     
     if [ "$docker_host_ip" ]
     then
