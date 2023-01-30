@@ -19,9 +19,9 @@ otherwise specified.
 This container will determine docker host address in the following order
 * Use ip from environment variable `DOCKER_HOST` if set
   * This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
-* Try to resolve host using DNS name `host.docker.internal` (for docker) or
-  `host.containers.internal` (for podman) using e.g. `getent ahostsv4 host.docker.internal`,
-
+* Try to resolve host using DNS names e.g. `getent ahostsv4 host.docker.internal` 
+  * docker hostname `host.docker.internal` 
+  * podman hostname `host.containers.internal`
 
 
 * Defaults to default gateway (`ip -4 route show default`)
