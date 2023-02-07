@@ -51,7 +51,7 @@ By default all ports (`1-65535`) are forwarded to docker host.
 
 ##### Podman Only
 
-* You probably need to load `nf_nat` kernal module by running following commands
+* You probably need to add `nf_nat` kernal module to podman machine by running following commands
 
   ```shell
   podman machine ssh
