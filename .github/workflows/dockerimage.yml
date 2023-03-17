@@ -86,6 +86,7 @@ jobs:
       with:
         context: .
         platforms: ${{ env.DOCKER_BUILDX_PLATFORMS }}
+        provenance: false
         push: ${{ env.GITHUB_BRANCH == 'master' || startsWith(env.GITHUB_TAG, 'v') }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
