@@ -51,7 +51,7 @@ else
   # If none hostname resolves, then we try using the default gateway address
   if [ ! "$docker_host_ip" ]; then
     docker_host_source="default gateway"
-    docker_host_ip="$(ip -4 route show default | cut -d' ' -f3)"
+    docker_host_ip="$(ip -4 route show default | cut -d' ' -f3 | head -n1)"
   fi
 
   if [ ! "$docker_host_ip" ]
