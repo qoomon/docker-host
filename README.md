@@ -34,30 +34,31 @@ By default all ports (`1-65535`) are forwarded to docker host.
 * You may also configure port mapping e.g. `443:8443, 8000-9000:5000-6000` (`CONTAINER_PORT:HOST_PORT`).
 
 ---
-#### ⚠️ On **Linux systems**
-
-* You have to bind your host applications to `0.0.0.0` or `bridge` network gateway in addition to `127.0.0.1`. 
-
-  Use following docker command to get the bridge network gateway IP address 
-
-  `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
-
-  > NOTE: For (rootless) podman, it's sufficient to bind to localhost, assuming
-  > default podman installation.
-
-* You might need to configure your firewall of the host system to allow the docker-host container to communicate with the host on your relevant port, see [#21](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038).
-
-#### ⚠️ On **MacOS systems**
-
-##### Podman Only
-
-* You probably need to add `nf_nat` kernal module to podman machine by running following commands
-
-  ```shell
-  podman machine ssh
-
-  sudo modprobe nf_nat
-  ```
+> [!IMPORTANT]
+> #### On **Linux systems**
+> 
+> * You have to bind your host applications to `0.0.0.0` or `bridge` network gateway in addition to `127.0.0.1`. 
+> 
+>   Use following docker command to get the bridge network gateway IP address 
+> 
+>   `docker network inspect bridge --format='{{( index .IPAM.Config 0).Gateway}}'`
+> 
+>   > For (rootless) **podman**, it's sufficient to bind to localhost, assuming
+>   > default podman installation.
+> 
+> * You might need to configure your firewall of the host system to allow the docker-host container to communicate with the host on your relevant port, see [#21](https://github.com/qoomon/docker-host/issues/21#issuecomment-497831038).
+> 
+> #### On **MacOS systems**
+> 
+> ##### Podman Only
+> 
+> * You probably need to add `nf_nat` kernal module to podman machine by running following commands
+> 
+>   ```shell
+>   podman machine ssh
+> 
+>   sudo modprobe nf_nat
+>   ```
 
 ---
 
