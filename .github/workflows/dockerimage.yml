@@ -40,7 +40,7 @@ jobs:
       run: docker run --rm -v "$PWD/Dockerfile:/Dockerfile:ro" redcoolbeans/dockerlint
       
     - name: Build and export to Docker
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         load: true
@@ -82,7 +82,7 @@ jobs:
             
     - if: ${{ env.GITHUB_BRANCH == 'master' || startsWith(env.GITHUB_TAG, 'v') }}
       name: Build and push Docker image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         platforms: ${{ env.DOCKER_BUILDX_PLATFORMS }}
