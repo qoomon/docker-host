@@ -69,22 +69,24 @@ echo "Docker Host: $docker_host_ip ($docker_host_source)"
 PORTS="${PORTS:-"1-65535"}"
 PORTS="$(echo ${PORTS//,/ })"
 
+nft add table nat
+nft add chain nat prerouting  { type nat hook prerouting  priority -100 \; }
+nft add chain nat postrouting { type nat hook postrouting priority  100 \; }
+
 echo "Forwarding ports: ${PORTS// /, }"
 for forwarding_port in $PORTS
 do
   docker_container_port="${forwarding_port%%:*}"
   docker_host_port="${forwarding_port#*:}"
+  
+  nft add rule nat prerouting tcp \
+    dport "${docker_container_port}" dnat to "$docker_host_ip:$docker_host_port"
+  nft add rule nat prerouting udp \
+    dport "${docker_container_port}" dnat to "$docker_host_ip:$docker_host_port"
 
-  iptables --table nat --insert PREROUTING \
-    --protocol tcp --destination-port "${docker_container_port/-/:}" \
-    --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
-
-  iptables --table nat --insert PREROUTING \
-    --protocol udp --destination-port "${docker_container_port/-/:}" \
-    --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
 done
 
-iptables --table nat --insert POSTROUTING --jump MASQUERADE
+nft add rule nat postrouting masquerade
 
 # --- Drop root access and "Ah, ha, ha, ha, stayin' alive" ---------------------
 

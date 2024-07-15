@@ -68,11 +68,11 @@ These examples will send messages from docker container to docker host with `net
 ### Preparation
 Start `netcat` server **TCP** on port `2323` to receive and display messages
 ```sh
-nc -p 2323 -lk
+nc -lk 2323
 ```
 Start `netcat` server **UDP** on port `5353` to receive and display messages
 ```sh
-nc -p 5353 -lk -u
+nc -lk 5353 -u
 ```   
 
 ## Docker Link
