@@ -16,10 +16,10 @@ also works for (rootless) podman. This README.md uses the term docker, but you
 can read that as both `docker` and `podman` (it works for both), unless
 otherwise specified.
 
-This container will determine docker host address in the following order
-* If set use ip from environment variable `DOCKER_HOST` 
+This container will determine the docker host address in the following order
+* If set use environment variable `DOCKER_HOST`. Can be an IP address or a DNS name.
   * This allows you to use this image to forward traffic to arbitrary destinations, not only the docker host.
-* Try to resolve host using DNS names e.g. `getent ahostsv4 host.docker.internal` 
+* Try to resolve host address from DNS names.
   * docker hostname `host.docker.internal` 
   * podman hostname `host.containers.internal`
 * Defaults to default gateway (`ip -4 route show default`)
