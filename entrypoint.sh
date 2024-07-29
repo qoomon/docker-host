@@ -3,6 +3,11 @@
 set -euo pipefail
 c=$'\n\t'
 
+# since alpine version 3.19.0 iptables-nft is used by default (https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.19.0),  
+# however this causes compatibility issues for hosts with older kernels (e.g. Windows > https://github.com/microsoft/WSL/issues/6044), 
+# therefore we still use iptables-legacy
+alias iptables=iptables-legacy
+
 # --- Ensure container network capabilities ----------------------------------
 
 if ! capsh --has-p='cap_net_admin' --has-p='cap_net_raw' &>/dev/null
@@ -82,20 +87,20 @@ do
   # nft add rule nat prerouting tcp \
   #   dport "${docker_container_port}" \
   #   dnat to "$docker_host_ip:$docker_host_port"
-  iptables-legacy --table nat --insert PREROUTING \
+  iptables --table nat --insert PREROUTING \
     --protocol tcp --destination-port "${docker_container_port/-/:}" \
     --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"   
 
   # nft add rule nat prerouting udp \
   #   dport "${docker_container_port}" \
   #   dnat to "$docker_host_ip:$docker_host_port"
-  iptables-legacy --table nat --insert PREROUTING \
+  iptables --table nat --insert PREROUTING \
     --protocol udp --destination-port "${docker_container_port/-/:}" \
     --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
 done
 
 # nft add rule nat postrouting masquerade
-iptables-legacy --table nat --insert POSTROUTING --jump MASQUERADE
+iptables --table nat --insert POSTROUTING --jump MASQUERADE
 
 
 # --- Drop root access and "Ah, ha, ha, ha, stayin' alive" ---------------------
