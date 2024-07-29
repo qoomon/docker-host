@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - "*"
+    paths:
+      - Dockerfile
+      - entrypoint.sh
     tags:
       - "v*"
 
