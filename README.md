@@ -76,7 +76,7 @@ nc -lk 5353 -u
 ## Docker Link
 Run the dockerhost container.
 ```sh
-docker run --rm \
+docker run \
   --name 'docker-host' \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
   --restart on-failure \
