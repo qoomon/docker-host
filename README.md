@@ -1,5 +1,5 @@
 
-# docker-host [![Sparkline](https://stars.medv.io/qoomon/docker-host.svg)](https://stars.medv.io/qoomon/docker-host)
+# docker-host [![starline](https://github-starline.vercel.app/qoomon/docker-host/)](https://github.com/qoomon/starline)
 
 [![GitHub release](https://img.shields.io/github/release/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
