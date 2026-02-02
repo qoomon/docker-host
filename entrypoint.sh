@@ -3,10 +3,13 @@
 set -euo pipefail
 c=$'\n\t'
 
-# since alpine version 3.19.0 iptables-nft is used by default (https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.19.0),  
-# however this causes compatibility issues for hosts with older kernels (e.g. Windows > https://github.com/microsoft/WSL/issues/6044), 
+# since alpine version 3.19.0 iptables-nft is used by default (https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.19.0),
+# however this causes compatibility issues for hosts with older kernels (e.g. Windows > https://github.com/microsoft/WSL/issues/6044),
 # therefore we still use iptables-legacy
 alias iptables=iptables-legacy
+if iptables-nft -L -n > /dev/null 2>&1; then
+   alias iptables=iptables-nft
+fi
 
 # --- Ensure container network capabilities ----------------------------------
 
@@ -83,13 +86,13 @@ for forwarding_port in $PORTS
 do
   docker_container_port="${forwarding_port%%:*}"
   docker_host_port="${forwarding_port#*:}"
-  
+
   # nft add rule nat prerouting tcp \
   #   dport "${docker_container_port}" \
   #   dnat to "$docker_host_ip:$docker_host_port"
   iptables --table nat --insert PREROUTING \
     --protocol tcp --destination-port "${docker_container_port/-/:}" \
-    --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"   
+    --jump DNAT --to-destination "$docker_host_ip:$docker_host_port"
 
   # nft add rule nat prerouting udp \
   #   dport "${docker_container_port}" \
