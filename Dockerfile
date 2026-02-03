@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM alpine:3.23.0
+FROM alpine:3.23.3
 
 RUN apk --no-cache upgrade \
  && apk --no-cache add  \
