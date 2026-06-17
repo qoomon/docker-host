@@ -42,7 +42,7 @@ docker_host_ip=""
 # Check if the docker host env var is set
 if [ "${DOCKER_HOST:-}" ]
 then
-    potential_docker_host_ip="$(_resolve_host "$docker_hostname")"
+    potential_docker_host_ip="$(_resolve_host "${DOCKER_HOST}")"
     if _check_ping "$potential_docker_host_ip"
     then
         docker_host_source="environment variable DOCKER_HOST ($DOCKER_HOST)"
