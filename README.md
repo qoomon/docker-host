@@ -1,5 +1,5 @@
 
-# docker-host [![starline](https://starlines.qoo.monster/assets/qoomon/docker-host)](https://github.com/qoomon/starlines)
+# docker-host [![starline](https://raw.githubusercontent.com/qoomon/qoomon/refs/heads/main/starlines/qoomon/docker-host/starline.svg)](https://github.com/qoomon/starlines)
 
 [![GitHub release](https://img.shields.io/github/release/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
 [![Docker Stars](https://img.shields.io/docker/pulls/qoomon/docker-host.svg)](https://hub.docker.com/r/qoomon/docker-host/)
